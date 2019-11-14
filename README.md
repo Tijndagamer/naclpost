@@ -12,8 +12,11 @@ you already have and other people trust.
 PyPI packages:
 * Flask
 * PyNaCl
+PyPi packages for development:
+* pytest
+* Flake8
 
-apt packages:
+System packages:
 * python-mysqldb
 
 ## License and copyright

@@ -2,25 +2,23 @@
 
 # Users
 
-```
-CREATE TABLE IF NOT EXISTS `users` (
-    `user_id` INT(11) NOT NULL auto_increment,
-    `alias` VARCHAR(50) NOT NULL,
-    `public_key` VARCHAR(50) NOT NULL,
-    `register_date` TIMESTAMP,
-    PRIMARY KEY (`user_id`)
-) DEFAULT CHARSET=utf8;
-```
++-----------------------+-------------+------+-----+-------------------+-----------------------------+
+| Field                 | Type        | Null | Key | Default           | Extra                       |
++-----------------------+-------------+------+-----+-------------------+-----------------------------+
+| user_id               | int(11)     | NO   | PRI | NULL              | auto_increment              |
+| alias                 | varchar(50) | NO   |     | NULL              |                             |
+| public_key            | varchar(50) | NO   |     | NULL              |                             |
+| public_key_encryption | varchar(50) | YES  |     | NULL              |                             |
+| register_date         | timestamp   | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
++-----------------------+-------------+------+-----+-------------------+-----------------------------+
 
 # Posts
 
-```
-CREATE TABLE IF NOT EXISTS `posts` (
-    `post_id` INT(11) NOT NULL auto_increment,
-    `user_id` INT(11) NOT NULL,
-    `post_text` VARCHAR(512) NOT NULL,
-    `posttime` TIMESTAMP,
-    PRIMARY KEY (`post_id`),
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-) DEFAULT CHARSET=utf8;
-```
++-----------+--------------+------+-----+-------------------+-----------------------------+
+| Field     | Type         | Null | Key | Default           | Extra                       |
++-----------+--------------+------+-----+-------------------+-----------------------------+
+| post_id   | int(11)      | NO   | PRI | NULL              | auto_increment              |
+| user_id   | int(11)      | NO   | MUL | NULL              |                             |
+| post_text | varchar(512) | NO   |     | NULL              |                             |
+| posttime  | timestamp    | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
++-----------+--------------+------+-----+-------------------+-----------------------------+

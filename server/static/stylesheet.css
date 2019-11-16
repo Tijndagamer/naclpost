@@ -1,0 +1,11 @@
+.red {
+    color: red;
+}
+
+.cybergreen {
+    color: #39f400;
+}
+
+p,small {
+    font-family: monospace;
+}

@@ -54,6 +54,15 @@ if os.path.isdir(app.config["UPLOAD_FOLDER"]) is False:
 def index_page():
     return render_template("index.html")
 
+@app.route("/post", methods=["GET", "POST"])
+def post_page():
+    if request.method == "GET":
+        return render_template("post.html")
+    elif request.method == "POST":
+        form = request.form
+        print(form['posttext'])
+        return render_template("post.html")
+
 
 #
 # Error handlers

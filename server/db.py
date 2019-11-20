@@ -95,7 +95,7 @@ class NaclPostDb:
         self.con.close()
 
     #
-    # Simple read methods
+    # Simple get methods
     #
 
     def get_user_by_pubkey(self, pubkey):
@@ -103,7 +103,7 @@ class NaclPostDb:
         signatures."""
 
         self.cur.execute(self.select_user_by_pubkey, {"public_key": pubkey})
-        return self.cur.fetchall()
+        return self.cur.fetchone()
 
     def get_user_by_id(self, user_id):
         """Get all information of a user selected via the user id."""
@@ -114,13 +114,13 @@ class NaclPostDb:
             raise exc.InvalidIdError(user_id)
 
         self.cur.execute(self.select_user_by_id, {"user_id": user_id})
-        return self.cur.fetchall()
+        return self.cur.fetchone()
 
     def get_user_by_alias(self, alias):
         """Get all information of a user selected via the alias."""
 
         self.cur.execute(self.select_user_by_alias, {"alias": alias})
-        return self.cur.fetchall()
+        return self.cur.fetchone()
 
     def get_user_by_pubkey_encr(self, pubkey):
         """Get all information of a user selected via their public key for
@@ -128,7 +128,7 @@ class NaclPostDb:
 
         self.cur.execute(self.select_user_by_pubkey_encr,
                          {"public_key_encryption": pubkey})
-        return self.cur.fetchall()
+        return self.cur.fetchone()
 
     def get_post_by_post_id(self, post_id):
         """Get a post by its id."""
@@ -153,3 +153,33 @@ class NaclPostDb:
             raise exc.InvalidIdError(user_id)
         self.cur.execute(self.select_posts_by_user_id, {"user_id": user_id})
         return self.cur.fetchall()
+
+    #
+    # Simple check methods
+    #
+
+    def pubkey_is_registered(self, pubkey):
+        """Check if a given public key for signing is registered with the
+        service."""
+
+        if self.get_user_by_pubkey(pubkey) == None:
+            return False
+
+        return True
+
+    def alias_is_registered(self, alias):
+        """Check if a given alias is registered with the service."""
+
+        if self.get_user_by_alias(alias) == None:
+            return False
+
+        return True
+
+    def pubkey_encr_is_registered(self, pubkey):
+        """Check if a given public key for encryption is registered with the
+        service."""
+
+        if self.get_user_by_pubkey_encr(pubkey) == None:
+            return False
+
+        return True

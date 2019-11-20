@@ -37,3 +37,14 @@ class UnknownPublicKeyError(Error):
 
     def __init__(self, pubkey):
         self.pubkey = pubkey
+
+class InvalidIdError(Error):
+    """Exception raised when a given ID is not of the type or form that we
+    expect it to be.
+
+    Attributes:
+        eid -- the id that caused the exception to be raised
+    """
+
+    def __init__(self, eid):
+        self.eid = eid

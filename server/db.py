@@ -22,6 +22,8 @@
 
 import pymysql.cursors
 
+import exceptions as exc
+
 
 class NaclPostDb:
     con = None
@@ -77,12 +79,77 @@ class NaclPostDb:
         self.__charset = charset
 
         self.connect()
+        self.cur = self.con.cursor()
 
-    def connect():
+    def connect(self):
+        """Connect to the database."""
+
         self.con = pymysql.connect(host=self.__host, user=self.__username,
                                    password=self.__password, db=self.__db,
                                    charset=self.__charset,
                                    cursorclass=pymysql.cursors.DictCursor)
 
-    def disconnect():
+    def disconnect(self):
+        """Close the connection with the database."""
+
         self.con.close()
+
+    #
+    # Simple read methods
+    #
+
+    def get_user_by_pubkey(self, pubkey):
+        """Get all information of a user selected via the public key for
+        signatures."""
+
+        self.cur.execute(self.select_user_by_pubkey, {"public_key": pubkey})
+        return self.cur.fetchall()
+
+    def get_user_by_id(self, user_id):
+        """Get all information of a user selected via the user id."""
+
+        try:
+            user_id = int(user_id)
+        except ValueError:
+            raise exc.InvalidIdError(user_id)
+
+        self.cur.execute(self.select_user_by_id, {"user_id": user_id})
+        return self.cur.fetchall()
+
+    def get_user_by_alias(self, alias):
+        """Get all information of a user selected via the alias."""
+
+        self.cur.execute(self.select_user_by_alias, {"alias": alias})
+        return self.cur.fetchall()
+
+    def get_user_by_pubkey_encr(self, pubkey):
+        """Get all information of a user selected via their public key for
+        encryption."""
+
+        self.cur.execute(self.select_user_by_pubkey_encr,
+                         {"public_key_encryption": pubkey})
+        return self.cur.fetchall()
+
+    def get_post_by_post_id(self, post_id):
+        """Get a post by its id."""
+
+        try:
+            post_id = int(post_id)
+        except ValueError:
+            raise exc.InvalidIdError(post_id)
+
+        self.cur.execute(self.select_post_by_id, {"post_id": post_id})
+        return self.cur.fetchone()
+
+    def get_posts_by_user_id(self, user_id):
+        """Get all posts made by a given user.
+
+        Warning: this method currently doesn't scale at all.
+        """
+
+        try:
+            user_id = int(user_id)
+        except ValueError:
+            raise exc.InvalidIdError(user_id)
+        self.cur.execute(self.select_posts_by_user_id, {"user_id": user_id})
+        return self.cur.fetchall()

@@ -48,3 +48,14 @@ class InvalidIdError(Error):
 
     def __init__(self, eid):
         self.eid = eid
+
+class AlreadyRegisteredError(Error):
+    """Exception raised when a certain public key or alias is already
+    registered with the service.
+
+    Attributes:
+        value -- the public key or alias that is already registered.
+    """
+
+    def __init__(self, value):
+        self.value = value

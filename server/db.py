@@ -162,7 +162,7 @@ class NaclPostDb:
         """Check if a given public key for signing is registered with the
         service."""
 
-        if self.get_user_by_pubkey(pubkey) == None:
+        if self.get_user_by_pubkey(pubkey) is None:
             return False
 
         return True
@@ -170,7 +170,7 @@ class NaclPostDb:
     def alias_is_registered(self, alias):
         """Check if a given alias is registered with the service."""
 
-        if self.get_user_by_alias(alias) == None:
+        if self.get_user_by_alias(alias) is None:
             return False
 
         return True
@@ -179,7 +179,7 @@ class NaclPostDb:
         """Check if a given public key for encryption is registered with the
         service."""
 
-        if self.get_user_by_pubkey_encr(pubkey) == None:
+        if self.get_user_by_pubkey_encr(pubkey) is None:
             return False
 
         return True

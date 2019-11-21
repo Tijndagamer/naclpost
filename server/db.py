@@ -31,32 +31,54 @@ class NaclPostDb:
 
     # SQL queries
 
+    # Add a user to the database; specify alias and public keys for signing
+    # and encryption.
     add_user = """INSERT INTO
             users
                 (alias, public_key, public_key_encryption)
             VALUES
                 (%(alias)s, %(public_key)s, %(public_key_encryption)s)"""
 
+    # Add a user to the database, but only specify the alias and public key
+    # for signing, not for encryption.
+    add_user_no_encr = """INSERT INTO
+            users
+                (alias, public_key)
+            VALUES
+                (%(alias)s, %(public_key)s)"""
+
+    # Add a new post to the database.
+    add_post = """INSERT INTO
+                    posts
+                        (user_id, post_text)
+                  VALUES
+                        (%(user_id)s, %(post_text)s)"""
+
+    # Select a user by their public key for signing
     select_user_by_pubkey = """SELECT * FROM
                                 users
                                WHERE
                                 public_key = %(public_key)s"""
 
+    # Select a user by their alias
     select_user_by_alias = """SELECT * FROM
                                  users
                                 WHERE
                                  alias = %(alias)s"""
 
+    # Select a user by their public key for encryption
     select_user_by_pubkey_encr = """SELECT * FROM
                                      users
                                     WHERE
                           public_key_encryption = %(public_key_encryption)s"""
 
+    # Select a user by their user ID
     select_user_by_id = """SELECT * FROM
                             users
                            WHERE
                             user_id = %(user_id)s"""
 
+    # Select a post by its ID
     select_post_by_id = """SELECT * FROM
                             posts
                            WHERE

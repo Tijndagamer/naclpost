@@ -48,7 +48,7 @@ class NaclPostDb:
                 (%(alias)s, %(public_key)s)"""
 
     # Add a new post to the database.
-    add_post = """INSERT INTO
+    _add_post = """INSERT INTO
                     posts
                         (user_id, post_text)
                   VALUES
@@ -234,3 +234,11 @@ class NaclPostDb:
             # Register a user without a public key for encryption.
             self.cur.execute(self._add_user_no_encr,
                              {"alias": alias, "public_key": public_key})
+            self.con.commit()
+
+    def add_post(self, user_id, post):
+        """Add a new post."""
+
+        self.cur.execute(self._add_post,
+                         {"user_id": user_id, "post_text": post})
+        self.con.commit()

@@ -33,7 +33,7 @@ class NaclPostDb:
 
     # Add a user to the database; specify alias and public keys for signing
     # and encryption.
-    add_user = """INSERT INTO
+    _add_user = """INSERT INTO
             users
                 (alias, public_key, public_key_encryption)
             VALUES
@@ -41,7 +41,7 @@ class NaclPostDb:
 
     # Add a user to the database, but only specify the alias and public key
     # for signing, not for encryption.
-    add_user_no_encr = """INSERT INTO
+    _add_user_no_encr = """INSERT INTO
             users
                 (alias, public_key)
             VALUES
@@ -55,31 +55,31 @@ class NaclPostDb:
                         (%(user_id)s, %(post_text)s)"""
 
     # Select a user by their public key for signing
-    select_user_by_pubkey = """SELECT * FROM
+    _select_user_by_pubkey = """SELECT * FROM
                                 users
                                WHERE
                                 public_key = %(public_key)s"""
 
     # Select a user by their alias
-    select_user_by_alias = """SELECT * FROM
+    _select_user_by_alias = """SELECT * FROM
                                  users
                                 WHERE
                                  alias = %(alias)s"""
 
     # Select a user by their public key for encryption
-    select_user_by_pubkey_encr = """SELECT * FROM
+    _select_user_by_pubkey_encr = """SELECT * FROM
                                      users
                                     WHERE
                           public_key_encryption = %(public_key_encryption)s"""
 
     # Select a user by their user ID
-    select_user_by_id = """SELECT * FROM
+    _select_user_by_id = """SELECT * FROM
                             users
                            WHERE
                             user_id = %(user_id)s"""
 
     # Select a post by its ID
-    select_post_by_id = """SELECT * FROM
+    _select_post_by_id = """SELECT * FROM
                             posts
                            WHERE
                             post_id = %(post_id)s"""
@@ -87,7 +87,7 @@ class NaclPostDb:
     # Warning: this fetches all the user's posts from the database. For
     # something more scalable, it might be better to fetch n posts by the
     # given user.
-    select_posts_by_user_id = """SELECT * FROM
+    _select_posts_by_user_id = """SELECT * FROM
                                   posts
                                  WHERE
                                   user_id = %(user_id)s"""
@@ -124,7 +124,7 @@ class NaclPostDb:
         """Get all information of a user selected via the public key for
         signatures."""
 
-        self.cur.execute(self.select_user_by_pubkey, {"public_key": pubkey})
+        self.cur.execute(self._select_user_by_pubkey, {"public_key": pubkey})
         return self.cur.fetchone()
 
     def get_user_by_id(self, user_id):
@@ -135,20 +135,20 @@ class NaclPostDb:
         except ValueError:
             raise exc.InvalidIdError(user_id)
 
-        self.cur.execute(self.select_user_by_id, {"user_id": user_id})
+        self.cur.execute(self._select_user_by_id, {"user_id": user_id})
         return self.cur.fetchone()
 
     def get_user_by_alias(self, alias):
         """Get all information of a user selected via the alias."""
 
-        self.cur.execute(self.select_user_by_alias, {"alias": alias})
+        self.cur.execute(self._select_user_by_alias, {"alias": alias})
         return self.cur.fetchone()
 
     def get_user_by_pubkey_encr(self, pubkey):
         """Get all information of a user selected via their public key for
         encryption."""
 
-        self.cur.execute(self.select_user_by_pubkey_encr,
+        self.cur.execute(self._select_user_by_pubkey_encr,
                          {"public_key_encryption": pubkey})
         return self.cur.fetchone()
 
@@ -160,7 +160,7 @@ class NaclPostDb:
         except ValueError:
             raise exc.InvalidIdError(post_id)
 
-        self.cur.execute(self.select_post_by_id, {"post_id": post_id})
+        self.cur.execute(self._select_post_by_id, {"post_id": post_id})
         return self.cur.fetchone()
 
     def get_posts_by_user_id(self, user_id):
@@ -173,7 +173,7 @@ class NaclPostDb:
             user_id = int(user_id)
         except ValueError:
             raise exc.InvalidIdError(user_id)
-        self.cur.execute(self.select_posts_by_user_id, {"user_id": user_id})
+        self.cur.execute(self._select_posts_by_user_id, {"user_id": user_id})
         return self.cur.fetchall()
 
     #
@@ -226,11 +226,11 @@ class NaclPostDb:
                 raise exc.AlreadyRegisteredError(public_key_encr)
 
             # Register a user with a public key for encryption.
-            self.cur.execute(self.add_user,
+            self.cur.execute(self._add_user,
                              {"alias": alias, "public_key": public_key,
                               "public_key_encryption": public_key_encr})
             self.con.commit()
         else:
             # Register a user without a public key for encryption.
-            self.cur.execute(self.add_user_no_encr,
+            self.cur.execute(self._add_user_no_encr,
                              {"alias": alias, "public_key": public_key})

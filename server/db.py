@@ -205,3 +205,32 @@ class NaclPostDb:
             return False
 
         return True
+
+    #
+    # Write methods
+    #
+
+    def register_user(self, alias, public_key, public_key_encr=None):
+        """Register a new user with the service."""
+
+        if self.alias_is_registered(alias):
+            # The given alias is already registered.
+            raise exc.AlreadyRegisteredError(alias)
+
+        if self.pubkey_is_registered(public_key):
+            # The given public key for signing is already registered.
+            raise exc.AlreadyRegisteredError(public_key)
+
+        if public_key_encr is not None:
+            if self.pubkey_encr_is_registered(public_key_encr):
+                raise exc.AlreadyRegisteredError(public_key_encr)
+
+            # Register a user with a public key for encryption.
+            self.cur.execute(self.add_user,
+                             {"alias": alias, "public_key": public_key,
+                              "public_key_encryption": public_key_encr})
+            self.con.commit()
+        else:
+            # Register a user without a public key for encryption.
+            self.cur.execute(self.add_user_no_encr,
+                             {"alias": alias, "public_key": public_key})
